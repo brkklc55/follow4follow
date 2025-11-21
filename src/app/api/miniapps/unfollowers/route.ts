@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { neynarClient } from '@/lib/neynar';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const fid = searchParams.get('fid');

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { neynarClient } from '@/lib/neynar';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     try {
         // Search for users to find someone active to follow

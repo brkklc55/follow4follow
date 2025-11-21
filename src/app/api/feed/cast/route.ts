@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { neynarClient } from '@/lib/neynar';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     try {
         // Fetch casts from the global feed using string literals to avoid enum issues
