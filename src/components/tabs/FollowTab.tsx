@@ -15,20 +15,24 @@ interface User {
 export function FollowTab() {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchUser = async () => {
         setLoading(true);
+        setError(null);
         try {
             const res = await fetch('/api/feed/follow');
             if (!res.ok) {
-                const text = await res.text();
-                console.error('API Error:', text);
-                throw new Error(`API failed with status ${res.status}`);
+                throw new Error("API Failed");
             }
             const data = await res.json();
+            if (data.error) {
+                throw new Error(data.error);
+            }
             setUser(data);
         } catch (error) {
             console.error('Failed to fetch user', error);
+            setError("Failed to load users. Please check API configuration.");
         } finally {
             setLoading(false);
         }
@@ -41,14 +45,19 @@ export function FollowTab() {
     const handleFollow = () => {
         if (user) {
             sdk.actions.viewProfile({ fid: user.fid });
-            // Ideally we would use followUser if available, but viewProfile is safer for now
-            // or sdk.actions.openUrl(`https://warpcast.com/${user.username}`);
-            // Let's try to find if followUser exists in types, if not fallback to viewProfile
-            // For now, viewProfile is the standard way to let user take action
         }
     };
 
     if (loading) return <div className="flex items-center justify-center h-full">Loading...</div>;
+
+    if (error) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full p-4 text-center space-y-4">
+                <p className="text-red-500">{error}</p>
+                <button onClick={fetchUser} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg">Retry</button>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col items-center justify-center h-full p-4 space-y-6">

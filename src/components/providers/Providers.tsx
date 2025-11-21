@@ -14,31 +14,35 @@ const config = {
 export function Providers({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const load = async () => {
-            const context = await sdk.context;
-            if (context?.user) {
-                const userData = {
-                    fid: context.user.fid,
-                    username: context.user.username || "user",
-                    displayName: context.user.displayName || "User",
-                    pfpUrl: context.user.pfpUrl || "",
-                    points: 0,
-                };
+            try {
+                // Tell Farcaster we are ready immediately so the splash screen goes away
+                // We can load user data in the background
+                sdk.actions.ready();
 
-                useAppStore.getState().setCurrentUser(userData);
+                const context = await sdk.context;
+                if (context?.user) {
+                    const userData = {
+                        fid: context.user.fid,
+                        username: context.user.username || "user",
+                        displayName: context.user.displayName || "User",
+                        pfpUrl: context.user.pfpUrl || "",
+                        points: 0,
+                    };
 
-                // Register user in DB to join the pool
-                try {
+                    useAppStore.getState().setCurrentUser(userData);
+
+                    // Register user in DB to join the pool
                     await fetch('/api/user/register', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(userData),
                     });
-                } catch (e) {
-                    console.error("Failed to register user:", e);
                 }
+            } catch (error) {
+                console.error("SDK Error:", error);
             }
-            sdk.actions.ready();
         };
+
         if (sdk && !isSDKLoaded) {
             isSDKLoaded = true;
             load();

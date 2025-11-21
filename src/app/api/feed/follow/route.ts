@@ -44,12 +44,6 @@ export async function GET() {
         });
     } catch (error) {
         console.error("Feed Error:", error);
-        return NextResponse.json({
-            fid: 123,
-            username: 'dwr.eth',
-            displayName: 'Dan Romero (Fallback)',
-            pfpUrl: 'https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_png,w_256/https://lh3.googleusercontent.com/MyUBL0xHzMeBu7BQQh8re5_qquIuxnLhboxqi8BElPNv82UEw1yP1xrcs0htVO9z36-WcQ3XvI-s_sZJcUs',
-            bio: 'Working on Farcaster and Warpcast.',
-        });
+        return NextResponse.json({ error: "Failed to fetch users. Check API Key." }, { status: 500 });
     }
 }

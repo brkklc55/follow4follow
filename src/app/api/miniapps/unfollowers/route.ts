@@ -46,15 +46,6 @@ export async function GET(req: Request) {
 
     } catch (error) {
         console.error("Neynar API Error:", error);
-        // Fallback for demo if API fails or limits reached
-        return NextResponse.json([
-            {
-                fid: 456,
-                username: 'elonmusk',
-                displayName: 'Elon Musk (Mock - API Failed)',
-                pfpUrl: 'https://i.imgur.com/dY2j2c2.jpg',
-                bio: 'Technoking of Tesla',
-            }
-        ]);
+        return NextResponse.json({ error: "Failed to fetch unfollowers. Check API Key." }, { status: 500 });
     }
 }
