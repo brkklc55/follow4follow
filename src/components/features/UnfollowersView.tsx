@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { ArrowLeft, UserMinus } from 'lucide-react';
+import { useAppStore } from '@/store/useAppStore';
+import sdk from "@farcaster/frame-sdk";
 
 interface User {
     fid: number;
@@ -14,8 +16,6 @@ interface User {
 interface UnfollowersViewProps {
     onBack: () => void;
 }
-
-import { useAppStore } from '@/store/useAppStore';
 
 export function UnfollowersView({ onBack }: UnfollowersViewProps) {
     const { currentUser } = useAppStore();
@@ -37,7 +37,11 @@ export function UnfollowersView({ onBack }: UnfollowersViewProps) {
             }
         };
         fetchUnfollowers();
-    }, []);
+    }, [currentUser]);
+
+    const handleUnfollow = (fid: number) => {
+        sdk.actions.viewProfile({ fid });
+    };
 
     return (
         <div className="flex flex-col h-full">
@@ -64,7 +68,11 @@ export function UnfollowersView({ onBack }: UnfollowersViewProps) {
                                     <p className="text-xs text-muted-foreground">@{user.username}</p>
                                 </div>
                             </div>
-                            <button className="p-2 text-red-500 hover:bg-red-500/10 rounded-full" title="Unfollow">
+                            <button
+                                onClick={() => handleUnfollow(user.fid)}
+                                className="p-2 text-red-500 hover:bg-red-500/10 rounded-full"
+                                title="View Profile to Unfollow"
+                            >
                                 <UserMinus size={20} />
                             </button>
                         </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { UserPlus } from 'lucide-react';
+import sdk from "@farcaster/frame-sdk";
 
 interface User {
     fid: number;
@@ -38,9 +39,13 @@ export function FollowTab() {
     }, []);
 
     const handleFollow = () => {
-        // TODO: Implement follow verification
-        alert(`Followed ${user?.username}! Verifying...`);
-        fetchUser(); // Get next user
+        if (user) {
+            sdk.actions.viewProfile({ fid: user.fid });
+            // Ideally we would use followUser if available, but viewProfile is safer for now
+            // or sdk.actions.openUrl(`https://warpcast.com/${user.username}`);
+            // Let's try to find if followUser exists in types, if not fallback to viewProfile
+            // For now, viewProfile is the standard way to let user take action
+        }
     };
 
     if (loading) return <div className="flex items-center justify-center h-full">Loading...</div>;
