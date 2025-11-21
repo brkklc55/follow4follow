@@ -1,0 +1,15 @@
+{
+    "frame": {
+        "name": "Follow4Follow",
+        "version": "1",
+        "iconUrl": "https://follow4follow-seven.vercel.app/icon.png",
+        "homeUrl": "https://follow4follow-seven.vercel.app",
+        "imageUrl": "https://follow4follow-seven.vercel.app/image.png",
+        "splashImageUrl": "https://follow4follow-seven.vercel.app/splash.png",
+        "splashBackgroundColor": "#855DCD",
+        "webhookUrl": "https://follow4follow-seven.vercel.app/api/webhook",
+        "subtitle": "Ultimate Farcaster growth tool.",
+        "description": "Follow4Follow is the ultimate growth tool for Farcaster. Easily discover new users, track who isn't following you back, and engage with the community. Earn points for every interaction and compete on the global leaderboard. Grow your audience smarter, not harder.",
+        "primaryCategory": "social"
+    }
+}
