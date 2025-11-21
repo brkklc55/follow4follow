@@ -16,13 +16,26 @@ export function Providers({ children }: { children: React.ReactNode }) {
         const load = async () => {
             const context = await sdk.context;
             if (context?.user) {
-                useAppStore.getState().setCurrentUser({
+                const userData = {
                     fid: context.user.fid,
                     username: context.user.username || "user",
                     displayName: context.user.displayName || "User",
                     pfpUrl: context.user.pfpUrl || "",
                     points: 0,
-                });
+                };
+
+                useAppStore.getState().setCurrentUser(userData);
+
+                // Register user in DB to join the pool
+                try {
+                    await fetch('/api/user/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(userData),
+                    });
+                } catch (e) {
+                    console.error("Failed to register user:", e);
+                }
             }
             sdk.actions.ready();
         };
