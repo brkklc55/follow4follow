@@ -21,17 +21,30 @@ export function UnfollowersView({ onBack }: UnfollowersViewProps) {
     const { currentUser } = useAppStore();
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchUnfollowers = async () => {
             if (!currentUser?.fid) return;
+            setLoading(true);
+            setError(null);
 
             try {
                 const res = await fetch(`/api/miniapps/unfollowers?fid=${currentUser.fid}`);
                 const data = await res.json();
-                setUsers(data);
-            } catch (error) {
+
+                if (!res.ok || data.error) {
+                    throw new Error(data.error || "Failed to fetch unfollowers");
+                }
+
+                if (Array.isArray(data)) {
+                    setUsers(data);
+                } else {
+                    setUsers([]);
+                }
+            } catch (error: any) {
                 console.error('Failed to fetch unfollowers', error);
+                setError(error.message || "An error occurred");
             } finally {
                 setLoading(false);
             }
@@ -55,6 +68,11 @@ export function UnfollowersView({ onBack }: UnfollowersViewProps) {
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {loading ? (
                     <div className="text-center text-muted-foreground">Loading...</div>
+                ) : error ? (
+                    <div className="text-center text-red-500 p-4">
+                        <p>{error}</p>
+                        <p className="text-sm mt-2">Please check your API configuration.</p>
+                    </div>
                 ) : users.length === 0 ? (
                     <div className="text-center text-muted-foreground">Everyone follows you back! 🎉</div>
                 ) : (
