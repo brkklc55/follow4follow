@@ -6,6 +6,7 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
     try {
         // Fetch casts from the global feed using string literals to avoid enum issues
+        // @ts-ignore
         const response = await neynarClient.fetchFeed("filter", {
             filterType: "global_trending",
             limit: 20,
@@ -30,16 +31,6 @@ export async function GET() {
         });
     } catch (error) {
         console.error("Neynar API Error:", error);
-        // Fallback mock data
-        return NextResponse.json({
-            hash: '0x123...',
-            text: 'Just building some cool Farcaster mini-apps! 🚀 #farcaster #build (Fallback)',
-            author: {
-                username: 'v',
-                displayName: 'Varun',
-                pfpUrl: 'https://i.imgur.com/I2rEbPF.png',
-            },
-            embeds: [],
-        });
+        return NextResponse.json({ error: "Failed to fetch casts. Check API Key." }, { status: 500 });
     }
 }

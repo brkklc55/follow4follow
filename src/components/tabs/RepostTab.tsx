@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Repeat } from 'lucide-react';
+import sdk from "@farcaster/frame-sdk";
 
 interface Cast {
     hash: string;
@@ -16,20 +17,24 @@ interface Cast {
 export function RepostTab() {
     const [cast, setCast] = useState<Cast | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchCast = async () => {
         setLoading(true);
+        setError(null);
         try {
             const res = await fetch('/api/feed/cast');
             if (!res.ok) {
-                const text = await res.text();
-                console.error('API Error:', text);
-                throw new Error(`API failed with status ${res.status}`);
+                throw new Error("API Failed");
             }
             const data = await res.json();
+            if (data.error) {
+                throw new Error(data.error);
+            }
             setCast(data);
         } catch (error) {
             console.error('Failed to fetch cast', error);
+            setError("Failed to load casts. Please check API configuration.");
         } finally {
             setLoading(false);
         }
@@ -40,11 +45,21 @@ export function RepostTab() {
     }, []);
 
     const handleRepost = () => {
-        alert(`Reposted cast by ${cast?.author.username}! Verifying...`);
-        fetchCast();
+        if (cast) {
+            sdk.actions.openUrl(`https://warpcast.com/${cast.author.username}/${cast.hash}`);
+        }
     };
 
     if (loading) return <div className="flex items-center justify-center h-full">Loading...</div>;
+
+    if (error) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full p-4 text-center space-y-4">
+                <p className="text-red-500">{error}</p>
+                <button onClick={fetchCast} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg">Retry</button>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col items-center justify-center h-full p-4 space-y-6">
