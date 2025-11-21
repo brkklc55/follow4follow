@@ -29,8 +29,9 @@ export async function GET() {
             },
             embeds: randomCast.embeds,
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Neynar API Error:", error);
-        return NextResponse.json({ error: "Failed to fetch casts. Check API Key." }, { status: 500 });
+        const errorMessage = error.response?.data?.message || error.message || "Unknown error";
+        return NextResponse.json({ error: `Neynar API Failed: ${errorMessage}` }, { status: 500 });
     }
 }

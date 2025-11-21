@@ -44,8 +44,12 @@ export async function GET(req: Request) {
             };
         }));
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Neynar API Error:", error);
-        return NextResponse.json({ error: "Failed to fetch unfollowers. Check API Key." }, { status: 500 });
+        const errorMessage = error.response?.data?.message || error.message || "Unknown error";
+        return NextResponse.json({
+            error: `Neynar API Failed: ${errorMessage}`,
+            details: error.toString()
+        }, { status: 500 });
     }
 }
