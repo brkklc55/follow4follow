@@ -1,4 +1,9 @@
 {
+    "accountAssociation": {
+        "header": "eyJmaWQiOjEzOTU5NjEsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHgzREYzYjFDNUE3N0ZmODVGRjI1NzI3RTU0Njg1YjE3MTcxQ0MyNTI2In0",
+        "payload": "eyJkb21haW4iOiJmb2xsb3c0Zm9sbG93LXNldmVuLnZlcmNlbC5hcHAifQ",
+        "signature": "0OHKmx/u6jfG6+vzO3tbvVVgRF3KmddMfCgrAU6pwaUrL6hpCo/Lx5TTB+l9IUt7LO6eY9gn3EWPqcAsXpkViBs="
+    },
     "frame": {
         "name": "Follow4Follow",
         "version": "1",
