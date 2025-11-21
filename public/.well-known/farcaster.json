@@ -13,7 +13,7 @@
         "splashImageUrl": "https://follow4follow-seven.vercel.app/splash.png",
         "splashBackgroundColor": "#855DCD",
         "webhookUrl": "https://follow4follow-seven.vercel.app/api/webhook",
-        "subtitle": "Grow & track unfollowers.",
+        "subtitle": "Grow and track unfollowers",
         "description": "The ultimate growth tool for Farcaster. Track unfollowers, discover new users, earn points, and climb the leaderboard. Grow smarter.",
         "primaryCategory": "social"
     }
