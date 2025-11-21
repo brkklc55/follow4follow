@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  fid         Int      @unique
+  username    String?
+  displayName String?
+  pfpUrl      String?
+  points      Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  actions     Action[]
+}
+
+model Action {
+  id        Int      @id @default(autoincrement())
+  type      String   // FOLLOW, LIKE, REPLY, REPOST
+  targetId  String   // FID or Hash
+  status    String   // PENDING, COMPLETED
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
