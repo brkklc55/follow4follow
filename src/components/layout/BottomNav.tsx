@@ -9,9 +9,6 @@ export function BottomNav() {
 
     const tabs = [
         { id: 'follow', label: 'Follow', icon: UserPlus },
-        { id: 'like', label: 'Like', icon: Heart },
-        { id: 'reply', label: 'Reply', icon: MessageCircle },
-        { id: 'repost', label: 'Repost', icon: Repeat },
         { id: 'unfollow', label: 'Unfollow', icon: UserMinus },
     ] as const;
 

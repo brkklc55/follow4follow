@@ -2,9 +2,6 @@
 
 import { useAppStore } from '@/store/useAppStore';
 import { FollowTab } from './tabs/FollowTab';
-import { LikeTab } from './tabs/LikeTab';
-import { ReplyTab } from './tabs/ReplyTab';
-import { RepostTab } from './tabs/RepostTab';
 import { UnfollowTab } from './tabs/UnfollowTab';
 import { BottomNav } from './layout/BottomNav';
 import { SignIn } from './auth/SignIn';
@@ -20,12 +17,6 @@ export function MainView() {
         switch (activeTab) {
             case 'follow':
                 return <FollowTab />;
-            case 'like':
-                return <LikeTab />;
-            case 'reply':
-                return <ReplyTab />;
-            case 'repost':
-                return <RepostTab />;
             case 'unfollow':
                 return <UnfollowTab />;
             default:
