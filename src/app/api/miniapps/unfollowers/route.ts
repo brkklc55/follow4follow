@@ -14,9 +14,6 @@ export async function GET(req: Request) {
     try {
         // 1. Get users I follow (Following)
         const followingRes = await neynarClient.fetchUserFollowing({ fid: Number(fid), limit: 100 });
-        // The SDK might return users directly or wrapped. 
-        // Based on error, it seems we need to be careful.
-        // Let's assume followingRes.users is the array.
         const following = followingRes.users;
 
         // 2. Get users who follow me (Followers)
@@ -47,6 +44,11 @@ export async function GET(req: Request) {
     } catch (error: any) {
         console.error("Neynar API Error:", error);
         const errorMessage = error.response?.data?.message || error.message || "Unknown error";
+
+        if (errorMessage.includes("paid plan") || errorMessage.includes("Upgrade")) {
+            return NextResponse.json({ error: "This feature requires a Neynar Premium plan.", code: "PREMIUM_FEATURE" }, { status: 403 });
+        }
+
         return NextResponse.json({
             error: `Neynar API Failed: ${errorMessage}`,
             details: error.toString()

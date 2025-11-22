@@ -42,8 +42,9 @@ export async function GET() {
             pfpUrl: randomUser.pfp_url,
             bio: randomUser.profile.bio.text,
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Feed Error:", error);
-        return NextResponse.json({ error: "Failed to fetch users. Check API Key." }, { status: 500 });
+        const errorMessage = error.response?.data?.message || error.message || "Unknown error";
+        return NextResponse.json({ error: `API Failed: ${errorMessage}` }, { status: 500 });
     }
 }

@@ -5,19 +5,22 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
-        // Fetch casts from the global feed using string literals to avoid enum issues
+        // Use searchCasts (free tier friendly) instead of fetchFeed (paid)
         // @ts-ignore
-        const response = await neynarClient.fetchFeed("filter", {
-            filterType: "global_trending",
+        const response = await neynarClient.searchCasts({
+            q: "farcaster",
             limit: 20,
         });
 
-        if (!response.casts || response.casts.length === 0) {
+        // @ts-ignore
+        const casts = response.result?.casts || response.casts || [];
+
+        if (casts.length === 0) {
             throw new Error("No casts found");
         }
 
         // Pick a random cast
-        const randomCast = response.casts[Math.floor(Math.random() * response.casts.length)];
+        const randomCast = casts[Math.floor(Math.random() * casts.length)];
 
         return NextResponse.json({
             hash: randomCast.hash,

@@ -34,6 +34,10 @@ export function UnfollowersView({ onBack }: UnfollowersViewProps) {
                 const data = await res.json();
 
                 if (!res.ok || data.error) {
+                    if (data.code === "PREMIUM_FEATURE") {
+                        setError("PREMIUM_FEATURE");
+                        return;
+                    }
                     throw new Error(data.error || "Failed to fetch unfollowers");
                 }
 
@@ -68,6 +72,20 @@ export function UnfollowersView({ onBack }: UnfollowersViewProps) {
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {loading ? (
                     <div className="text-center text-muted-foreground">Loading...</div>
+                ) : error === "PREMIUM_FEATURE" ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-4">
+                        <div className="bg-yellow-500/10 p-4 rounded-full">
+                            <UserMinus size={48} className="text-yellow-500" />
+                        </div>
+                        <h2 className="text-xl font-bold text-yellow-500">Premium Feature</h2>
+                        <p className="text-muted-foreground">
+                            Viewing unfollowers requires a Neynar Premium plan.
+                            Please upgrade your API key to access this feature.
+                        </p>
+                        <button onClick={onBack} className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg">
+                            Go Back
+                        </button>
+                    </div>
                 ) : error ? (
                     <div className="text-center text-red-500 p-4">
                         <p>{error}</p>
