@@ -1,55 +1,46 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { neynarClient } from '@/lib/neynar';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
         // 1. Try to get a random user from our "Follow4Follow" pool (DB)
-        try {
-            const userCount = await prisma.user.count();
+        const userCount = await prisma.user.count();
 
-            if (userCount > 0) {
-                const skip = Math.floor(Math.random() * userCount);
-                const randomUser = await prisma.user.findFirst({
-                    skip: skip,
+        if (userCount > 0) {
+            const skip = Math.floor(Math.random() * userCount);
+            const randomUser = await prisma.user.findFirst({
+                skip: skip,
+            });
+
+            if (randomUser) {
+                return NextResponse.json({
+                    fid: randomUser.fid,
+                    username: randomUser.username,
+                    displayName: randomUser.displayName,
+                    pfpUrl: randomUser.pfpUrl,
+                    bio: "Follow4Follow Community Member",
                 });
-
-                if (randomUser) {
-                    return NextResponse.json({
-                        fid: randomUser.fid,
-                        username: randomUser.username,
-                        displayName: randomUser.displayName,
-                        pfpUrl: randomUser.pfpUrl,
-                        bio: "Follow4Follow Community Member",
-                    });
-                }
             }
-        } catch (dbError) {
-            console.warn("Database unavailable, skipping pool:", dbError);
-            // Continue to fallback
         }
 
-        // 2. Fallback: If DB is empty (or only me), search Neynar
-        const response = await neynarClient.searchUser({ q: 'eth', limit: 20 });
-
-        if (!response.result.users || response.result.users.length === 0) {
-            throw new Error("No users found");
-        }
-
-        const randomUser = response.result.users[Math.floor(Math.random() * response.result.users.length)];
-
+        // If we are here, either DB is empty or something went wrong with finding the user
         return NextResponse.json({
-            fid: randomUser.fid,
-            username: randomUser.username,
-            displayName: randomUser.display_name,
-            pfpUrl: randomUser.pfp_url,
-            bio: randomUser.profile.bio.text,
-        });
+            error: "Pool is empty. Be the first to join by logging in!",
+            empty: true
+        }, { status: 404 });
+
     } catch (error: any) {
-        console.error("Feed Error:", error);
-        const errorMessage = error.response?.data?.message || error.message || "Unknown error";
-        return NextResponse.json({ error: `API Failed: ${errorMessage}` }, { status: 500 });
+        console.error("Database Error:", error);
+        // Check for common database errors
+        if (error.code === 'P1001' || error.message?.includes("Unable to open database")) {
+            return NextResponse.json({
+                error: "Database unavailable. Please connect a persistent database (e.g. Vercel Postgres).",
+                code: "DB_ERROR"
+            }, { status: 503 });
+        }
+
+        return NextResponse.json({ error: `Database Error: ${error.message}` }, { status: 500 });
     }
 }

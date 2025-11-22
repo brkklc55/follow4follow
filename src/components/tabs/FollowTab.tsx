@@ -53,9 +53,34 @@ export function FollowTab() {
 
     if (error) {
         return (
-            <div className="flex flex-col items-center justify-center h-full p-4 text-center space-y-4">
-                <p className="text-red-500">{error}</p>
-                <button onClick={fetchUser} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg">Retry</button>
+            <div className="flex flex-col items-center justify-center h-full p-6 text-center space-y-4">
+                {error.includes("Database unavailable") ? (
+                    <>
+                        <div className="bg-red-500/10 p-4 rounded-full">
+                            <UserPlus size={48} className="text-red-500" />
+                        </div>
+                        <h2 className="text-xl font-bold text-red-500">Database Required</h2>
+                        <p className="text-muted-foreground text-sm">
+                            To create a user pool, this app needs a persistent database.
+                            Please connect Vercel Postgres or another database provider.
+                        </p>
+                    </>
+                ) : error.includes("Pool is empty") ? (
+                    <>
+                        <div className="bg-blue-500/10 p-4 rounded-full">
+                            <UserPlus size={48} className="text-blue-500" />
+                        </div>
+                        <h2 className="text-xl font-bold text-blue-500">Pool is Empty</h2>
+                        <p className="text-muted-foreground">
+                            You are the first one here! Wait for others to join the Follow4Follow pool.
+                        </p>
+                    </>
+                ) : (
+                    <>
+                        <p className="text-red-500">{error}</p>
+                        <button onClick={fetchUser} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg">Retry</button>
+                    </>
+                )}
             </div>
         );
     }
