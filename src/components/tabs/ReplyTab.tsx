@@ -32,9 +32,9 @@ export function ReplyTab() {
                 throw new Error(data.error);
             }
             setCast(data);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to fetch cast', error);
-            setError("Failed to load casts. Please check API configuration.");
+            setError(error.message || "Failed to load casts.");
         } finally {
             setLoading(false);
         }

@@ -30,9 +30,9 @@ export function FollowTab() {
                 throw new Error(data.error);
             }
             setUser(data);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to fetch user', error);
-            setError("Failed to load users. Please check API configuration.");
+            setError(error.message || "Failed to load users.");
         } finally {
             setLoading(false);
         }
