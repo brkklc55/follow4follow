@@ -25,7 +25,8 @@ export function RepostTab() {
         try {
             const res = await fetch('/api/feed/cast');
             if (!res.ok) {
-                throw new Error("API Failed");
+                const errorData = await res.json();
+                throw new Error(errorData.error || `API Failed with status ${res.status}`);
             }
             const data = await res.json();
             if (data.error) {
