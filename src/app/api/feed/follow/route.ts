@@ -7,23 +7,28 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
     try {
         // 1. Try to get a random user from our "Follow4Follow" pool (DB)
-        const userCount = await prisma.user.count();
+        try {
+            const userCount = await prisma.user.count();
 
-        if (userCount > 0) {
-            const skip = Math.floor(Math.random() * userCount);
-            const randomUser = await prisma.user.findFirst({
-                skip: skip,
-            });
-
-            if (randomUser) {
-                return NextResponse.json({
-                    fid: randomUser.fid,
-                    username: randomUser.username,
-                    displayName: randomUser.displayName,
-                    pfpUrl: randomUser.pfpUrl,
-                    bio: "Follow4Follow Community Member", // We could store bio in DB too
+            if (userCount > 0) {
+                const skip = Math.floor(Math.random() * userCount);
+                const randomUser = await prisma.user.findFirst({
+                    skip: skip,
                 });
+
+                if (randomUser) {
+                    return NextResponse.json({
+                        fid: randomUser.fid,
+                        username: randomUser.username,
+                        displayName: randomUser.displayName,
+                        pfpUrl: randomUser.pfpUrl,
+                        bio: "Follow4Follow Community Member",
+                    });
+                }
             }
+        } catch (dbError) {
+            console.warn("Database unavailable, skipping pool:", dbError);
+            // Continue to fallback
         }
 
         // 2. Fallback: If DB is empty (or only me), search Neynar
